@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Préstamo de Alargues</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eaeaea;
+    }
+    
+    .header h1 {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 5px;
+      font-size: 28px;
+    }
+    
+    .header p {
+      color: #7f8c8d;
+      margin-top: 0;
+      font-size: 16px;
+    }
+    
+    /* Card Layout */
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      padding: 25px;
+      margin-bottom: 25px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .card h2 {
+      margin-top: 0;
+      color: #2c3e50;
+      font-weight: 500;
+      font-size: 22px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f1f1f1;
+    }
+    
+    /* Extension Cord Grid */
+    .extension-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    
+    .extension-item {
+      border-radius: 10px;
+      padding: 20px 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      font-weight: 500;
+    }
+    
+    .extension-item.available {
+      background-color: #4CAF50;
+      color: white;
+    }
+    
+    .extension-item.unavailable {
+      background-color: #F44336;
+      color: white;
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .extension-item.selected {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border: 2px solid #2196F3;
+    }
+    
+    .extension-item:hover.available {
+      transform: translateY(-5px);
+      box-shadow: 0 7px 14px rgba(0,0,0,0.1);
+    }
+    
+    /* Extension Cord Config Grid */
+    .extension-config-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    
+    .extension-config-item {
+      background-color: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .extension-config-item label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 500;
+      width: 100%;
+    }
+    
+    .extension-config-item input[type="checkbox"] {
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+    }
+    
+    /* Form Styles */
+    .form-section {
+      display: none;
+    }
+    
+    .form-group {
+      margin-bottom: 18px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #2c3e50;
+      font-size: 15px;
+    }
+    
+    .form-group select, 
+    .form-group input[type="text"],
+    .form-group input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    
+    .form-group select:focus, 
+    .form-group input[type="text"]:focus,
+    .form-group input[type="password"]:focus {
+      border-color: #2196F3;
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+      outline: none;
+    }
+    
+    .btn {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'Poppins', sans-serif;
+      transition: background-color 0.3s, transform 0.2s;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .btn:hover {
+      background-color: #0b7dda;
+      transform: translateY(-2px);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-secondary {
+      background-color: #78909c;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #607d8b;
+    }
+    
+    .btn-danger {
+      background-color: #F44336;
+    }
+    
+    .btn-danger:hover {
+      background-color: #d32f2f;
+    }
+    
+    .btn-success {
+      background-color: #4CAF50;
+    }
+    
+    .btn-success:hover {
+      background-color: #388E3C;
+    }
+    
+    /* Admin Panel */
+    .admin-panel {
+      display: none;
+    }
+    
+    .tab-navigation {
+      display: flex;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 20px;
+    }
+    
+    .tab-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      font-weight: 500;
+      color: #78909c;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    
+    .tab-item:hover {
+      color: #2196F3;
+    }
+    
+    .tab-item.active {
+      border-bottom: 3px solid #2196F3;
+      color: #2196F3;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    th, td {
+      padding: 14px 15px;
+      border-bottom: 1px solid #f1f1f1;
+      text-align: left;
+    }
+    
+    th {
+      background-color: #f8f9fa;
+      font-weight: 500;
+      color: #2c3e50;
+      position: sticky;
+      top: 0;
+    }
+    
+    tr:last-child td {
+      border-bottom: none;
+    }
+    
+    tr:hover td {
+      background-color: #f5f7fa;
+    }
+    
+    /* Nuevo estilo para las filas clicables */
+    .clickable-row {
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .clickable-row:hover {
+      background-color: #e3f2fd !important; /* Azul muy claro al pasar el mouse */
+    }
+    
+    .clickable-row.selected {
+      background-color: #bbdefb !important; /* Azul claro cuando está seleccionado */
+    }
+    
+    /* Notification */
+    .notification {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      display: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      animation: fadeInDown 0.3s ease;
+    }
+    
+    .notification.success {
+      background-color: #E8F5E9;
+      color: #388E3C;
+      border-left: 4px solid #4CAF50;
+    }
+    
+    .notification.error {
+      background-color: #FFEBEE;
+      color: #D32F2F;
+      border-left: 4px solid #F44336;
+    }
+    
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #78909c;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .extension-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .tab-navigation {
+        flex-direction: column;
+      }
+      
+      .tab-item {
+        border-bottom: none;
+        border-left: 3px solid transparent;
+        padding: 10px 15px;
+      }
+      
+      .tab-item.active {
+        border-bottom: none;
+        border-left: 3px solid #2196F3;
+      }
+      
+      .btn {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+    
+    /* Nuevo estilo para la sección de préstamos activos */
+    .current-loans-section {
+      margin-top: 20px;
+    }
+    
+    .no-loans-message {
+      text-align: center;
+      padding: 20px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      color: #78909c;
+    }
+    
+    .refresh-button {
+      margin-top: 10px;
+      text-align: right;
+    }
+    
+    .loan-status-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .loan-status-dot.active {
+      background-color: #F44336;
+    }
+    
+    /* Estilo para el botón de acción en la tabla */
+    .action-button {
+      padding: 6px 12px;
+      font-size: 13px;
+      margin: 0;
+    }
+    
+    /* Estilo para el contador de tiempo */
+    .time-counter {
+      font-size: 14px;
+      color: #F44336;
+      font-weight: 500;
+      margin-top: 3px;
+    }
+    
+    /* Estilo para la franja horaria */
+    .time-slot {
+      font-size: 13px;
+      color: #607d8b;
+      margin-top: 3px;
+    }
+    
+    /* Estilo para la información de duración en modal */
+    .duration-info {
+      margin-top: 15px;
+      padding: 15px;
+      background-color: #f1f8e9;
+      border-radius: 8px;
+      border-left: 4px solid #4CAF50;
+    }
+    
+    .duration-info p {
+      margin: 5px 0;
+    }
+    
+    .duration-info .highlight {
+      font-weight: 500;
+      color: #2c3e50;
+    }
+    
+    /* Estilo para el resultado de devolución */
+    .return-result {
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Sistema de Préstamo de Alargues</h1>
+      <p>Selecciona un alargue disponible para solicitar o devolver</p>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+    
+    <!-- Main section for regular users -->
+    <div id="main-section">
+      <div class="card">
+        <h2>Alargues Disponibles</h2>
+        <div class="extension-grid" id="extension-grid">
+          <!-- Extension cords will be loaded here -->
+          <div class="loading">Cargando...</div>
+        </div>
+        
+        <!-- Nueva sección para mostrar los alargues en préstamo -->
+        <div class="current-loans-section">
+          <h3>Alargues en Préstamo</h3>
+          <div class="loading" id="current-loans-loading">Cargando préstamos activos...</div>
+          <table id="current-loans-main-table" style="display: none;">
+            <thead>
+              <tr>
+                <th>Alargue</th>
+                <th>Solicitante</th>
+                <th>Curso</th>
+                <th>Docente</th>
+                <th>Franja</th>
+                <th>Tiempo</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Current loans will be loaded here -->
+            </tbody>
+          </table>
+          <div id="no-current-loans-main" class="no-loans-message" style="display: none;">
+            <p>No hay alargues en préstamo en este momento.</p>
+          </div>
+          <div class="refresh-button">
+            <button class="btn btn-secondary" id="btn-refresh-loans">Actualizar</button>
+          </div>
+        </div>
+        
+        <div class="card" id="action-buttons" style="display: none;">
+          <div class="form-group">
+            <button class="btn" id="btn-loan">Solicitar Préstamo</button>
+            <button class="btn btn-secondary" id="btn-return">Registrar Devolución</button>
+            <button class="btn btn-danger" id="btn-cancel">Cancelar</button>
+          </div>
+        </div>
+        
+        <!-- Loan Form -->
+        <div class="form-section" id="loan-form">
+          <h3>Solicitar Préstamo de Alargue <span id="selected-cord-loan"></span></h3>
+          
+          <div class="form-group">
+            <label for="user-type">Tipo de Usuario:</label>
+            <select id="user-type">
+              <option value="student">Estudiante</option>
+              <option value="teacher">Docente</option>
+            </select>
+          </div>
+          
+          <div class="form-group" id="course-group">
+            <label for="course">Curso:</label>
+            <select id="course">
+              <option value="">Selecciona un curso...</option>
+              <!-- Courses will be loaded here -->
+            </select>
+          </div>
+          
+          <div class="form-group" id="student-group">
+            <label for="student">Estudiante:</label>
+            <select id="student">
+              <option value="">Selecciona un estudiante...</option>
+              <!-- Students will be loaded here -->
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="teacher">Docente:</label>
+            <select id="teacher">
+              <option value="">Selecciona un docente...</option>
+              <!-- Teachers will be loaded here -->
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <button class="btn btn-success" id="btn-submit-loan">Registrar Préstamo</button>
+            <button class="btn btn-secondary" id="btn-cancel-loan">Cancelar</button>
+          </div>
+        </div>
+        
+        <!-- Return Form -->
+        <div class="form-section" id="return-form">
+          <h3>Registrar Devolución de Alargue <span id="selected-cord-return"></span></h3>
+          
+          <div class="form-group">
+            <label>¿Eres la persona que solicitó el préstamo?</label>
+            <div>
+              <label style="display: inline-flex; align-items: center; margin-right: 20px; font-weight: normal;">
+                <input type="radio" name="is-borrower" value="yes" checked style="margin-right: 5px;"> 
+                Sí, yo lo solicité
+              </label>
+            </div>
+            <div>
+              <label style="display: inline-flex; align-items: center; font-weight: normal;">
+                <input type="radio" name="is-borrower" value="no" style="margin-right: 5px;"> 
+                No, lo está devolviendo otra persona
+              </label>
+            </div>
+          </div>
+          
+          <div class="form-group" id="returner-group" style="display: none;">
+            <label for="returner-name">Nombre de quien devuelve:</label>
+            <input type="text" id="returner-name">
+          </div>
+          
+          <div class="form-group">
+            <button class="btn btn-success" id="btn-submit-return">Registrar Devolución</button>
+            <button class="btn btn-secondary" id="btn-cancel-return">Cancelar</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h2>Acceso Administrador</h2>
+        <div class="form-group">
+          <button class="btn" id="btn-admin-access">Acceder como Administrador</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Admin Login -->
+    <div class="card" id="admin-login" style="display: none;">
+      <h2>Iniciar Sesión como Administrador</h2>
+      <div class="form-group">
+        <label for="admin-username">Usuario:</label>
+        <input type="text" id="admin-username">
+      </div>
+      
+      <div class="form-group">
+        <label for="admin-password">Contraseña:</label>
+        <input type="password" id="admin-password">
+      </div>
+      
+      <div class="form-group">
+        <button class="btn" id="btn-login">Iniciar Sesión</button>
+        <button class="btn btn-secondary" id="btn-back-to-main">Volver</button>
+      </div>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="admin-panel">
+      <div class="header">
+        <h1>Panel de Administración</h1>
+        <button class="btn btn-secondary" id="btn-logout" style="margin-top: 10px;">Cerrar Sesión</button>
+      </div>
+      
+      <div class="card">
+        <div class="tab-navigation">
+          <div class="tab-item active" data-tab="current-loans">Préstamos Actuales</div>
+          <div class="tab-item" data-tab="loan-history">Historial de Préstamos</div>
+          <div class="tab-item" data-tab="blacklist">Lista de Sanciones</div>
+          <div class="tab-item" data-tab="configuration">Configuración</div>
+        </div>
+        
+        <!-- Current Loans Tab -->
+        <div class="tab-content active" id="current-loans">
+          <h2>Préstamos Actuales</h2>
+          <div class="loading">Cargando préstamos actuales...</div>
+          <table id="current-loans-table" style="display: none;">
+            <thead>
+              <tr>
+                <th>Alargue</th>
+                <th>Tipo</th>
+                <th>Curso</th>
+                <th>Solicitante</th>
+                <th>Docente</th>
+                <th>Franja</th>
+                <th>Hora de Préstamo</th>
+                <th>Tiempo Transcurrido</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Current loans will be loaded here -->
+            </tbody>
+          </table>
+          <div id="no-current-loans" style="display: none;">
+            <p>No hay préstamos activos en este momento.</p>
+          </div>
+        </div>
+        
+        <!-- Loan History Tab -->
+        <div class="tab-content" id="loan-history">
+          <h2>Historial de Préstamos</h2>
+          
+          <div class="form-group">
+            <label for="history-course">Filtrar por Curso:</label>
+            <select id="history-course">
+              <option value="">Selecciona un curso...</option>
+              <!-- Courses will be loaded here -->
+            </select>
+          </div>
+          
+          <div class="loading">Selecciona un curso para ver el historial...</div>
+          <table id="history-table" style="display: none;">
+            <thead>
+              <tr>
+                <th>Alargue</th>
+                <th>Tipo</th>
+                <th>Solicitante</th>
+                <th>Docente</th>
+                <th>Franjas</th>
+                <th>Hora de Préstamo</th>
+                <th>Hora de Devolución</th>
+                <th>Duración</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Loan history will be loaded here -->
+            </tbody>
+          </table>
+          <div id="no-history" style="display: none;">
+            <p>No hay historial de préstamos para este curso.</p>
+          </div>
+        </div>
+        
+        <!-- Blacklist Tab -->
+        <div class="tab-content" id="blacklist">
+          <h2>Estudiantes Sancionados</h2>
+          <div class="loading">Cargando lista de sanciones...</div>
+          <table id="blacklist-table" style="display: none;">
+            <thead>
+              <tr>
+                <th>Estudiante</th>
+                <th>Fecha de Sanción</th>
+                <th>Reportado por</th>
+                <th>Motivo</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Blacklisted students will be loaded here -->
+            </tbody>
+          </table>
+          <div id="no-blacklist" style="display: none;">
+            <p>No hay estudiantes sancionados en este momento.</p>
+          </div>
+        </div>
+        
+        <!-- Configuration Tab -->
+        <div class="tab-content" id="configuration">
+          <h2>Configuración de Alargues</h2>
+          <p>Habilita o deshabilita los alargues disponibles en el sistema.</p>
+          
+          <div class="loading">Cargando configuración...</div>
+          
+          <div id="config-container" style="display: none;">
+            <div class="extension-config-grid">
+              <!-- Extension cord config will be loaded here -->
+            </div>
+            
+            <div class="form-group" style="margin-top: 20px;">
+              <button class="btn btn-success" id="btn-save-config">Guardar Configuración</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Global variables
+    let selectedCordNumber = null;
+    let availableCords = [];
+    let courses = [];
+    let teachers = [];
+    let currentLoans = [];
+    let loanTimeIntervals = {}; // Para guardar los intervalos de actualización de tiempo
+    
+    // Initialize the application
+    function init() {
+      loadExtensionCords();
+      loadCurrentLoansForMainPage(); // Cargar préstamos actuales en la página principal
+      setupEventListeners();
+    }
+    
+    // Load extension cords
+    function loadExtensionCords() {
+      google.script.run
+        .withSuccessHandler(function(cords) {
+          availableCords = cords;
+          renderExtensionCords();
+        })
+        .withFailureHandler(handleError)
+        .getAvailableExtensionCords();
+    }
+    
+    // Render extension cords
+    function renderExtensionCords() {
+      const grid = document.getElementById('extension-grid');
+      grid.innerHTML = '';
+      
+      availableCords.forEach(function(cord) {
+        const item = document.createElement('div');
+        item.className = cord.available ? 'extension-item available' : 'extension-item unavailable';
+        item.textContent = 'Alargue ' + cord.number;
+        item.dataset.number = cord.number;
+        
+        if (cord.available) {
+          item.addEventListener('click', function() {
+            selectExtensionCord(cord.number);
+          });
+        }
+        
+        grid.appendChild(item);
+      });
+    }
+    
+    // Select an extension cord
+    function selectExtensionCord(number) {
+      selectedCordNumber = number;
+      
+      // Update selected cord display
+      document.getElementById('selected-cord-loan').textContent = number;
+      document.getElementById('selected-cord-return').textContent = number;
+      
+      // Show action buttons
+      document.getElementById('action-buttons').style.display = 'block';
+      
+      // Highlight selected cord
+      const items = document.querySelectorAll('.extension-item');
+      items.forEach(function(item) {
+        if (parseInt(item.dataset.number) === number) {
+          item.classList.add('selected');
+        } else {
+          item.classList.remove('selected');
+        }
+      });
+    }
+    
+    // Calculate time elapsed - CORREGIDO
+    function calculateTimeElapsed(startTime) {
+      try {
+        const now = new Date();
+        const start = new Date(startTime);
+        
+        // Verificar si la fecha es válida
+        if (isNaN(start.getTime())) {
+          console.error("Fecha inválida en calculateTimeElapsed:", startTime);
+          return { hours: 0, minutes: 0, seconds: 0, text: "Error de fecha" };
+        }
+        
+        const diff = now - start;
+        
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        return {
+          hours: hours,
+          minutes: minutes,
+          seconds: seconds,
+          text: `${hours}h ${minutes}m ${seconds}s`
+        };
+      } catch (error) {
+        console.error("Error en calculateTimeElapsed:", error);
+        return { hours: 0, minutes: 0, seconds: 0, text: "Error" };
+      }
+    }
+    
+    // Update time elapsed for a loan - CORREGIDO
+    function updateTimeElapsed(loanId, startTime) {
+      try {
+        const element = document.getElementById('time-counter-' + loanId);
+        if (element) {
+          const timeElapsed = calculateTimeElapsed(startTime);
+          element.textContent = timeElapsed.text;
+        }
+      } catch (error) {
+        console.error("Error en updateTimeElapsed:", error, loanId, startTime);
+      }
+    }
+    
+    // Clear all loan time intervals
+    function clearLoanTimeIntervals() {
+      Object.values(loanTimeIntervals).forEach(interval => {
+        clearInterval(interval);
+      });
+      loanTimeIntervals = {};
+    }
+    
+    // Load current loans for the main page - CORREGIDO
+    function loadCurrentLoansForMainPage() {
+      document.getElementById('current-loans-loading').style.display = 'block';
+      document.getElementById('current-loans-main-table').style.display = 'none';
+      document.getElementById('no-current-loans-main').style.display = 'none';
+      
+      // Limpiar los intervalos existentes
+      clearLoanTimeIntervals();
+      
+      google.script.run
+        .withSuccessHandler(function(loans) {
+          console.log("Préstamos recibidos:", loans); // Para depuración
+          
+          currentLoans = loans; // Guardar los préstamos para referencia
+          const tableBody = document.querySelector('#current-loans-main-table tbody');
+          tableBody.innerHTML = '';
+          
+          if (loans && loans.length > 0) {
+            loans.forEach(function(loan, index) {
+              try {
+                const loanId = 'loan-' + index;
+                const row = document.createElement('tr');
+                row.className = 'clickable-row';
+                row.dataset.cordNumber = loan.cordNumber;
+                
+                // Asegurarnos de que la fecha de préstamo es un objeto Date válido
+                const loanDate = new Date(loan.loanDate);
+                
+                // Verificar si la fecha es válida
+                if (isNaN(loanDate.getTime())) {
+                  console.error("Fecha inválida:", loan.loanDate);
+                  throw new Error("Fecha de préstamo inválida");
+                }
+                
+                // Calcular tiempo transcurrido
+                const timeElapsed = calculateTimeElapsed(loanDate);
+                
+                row.innerHTML = `
+                  <td><span class="loan-status-dot active"></span>Alargue ${loan.cordNumber}</td>
+                  <td>${loan.borrowerName}</td>
+                  <td>${loan.course}</td>
+                  <td>${loan.teacherName}</td>
+                  <td><div class="time-slot">${loan.timeSlot}</div></td>
+                  <td><div id="time-counter-${loanId}" class="time-counter">${timeElapsed.text}</div></td>
+                  <td><button class="btn btn-success action-button" data-cord-number="${loan.cordNumber}">Devolver</button></td>
+                `;
+                
+                tableBody.appendChild(row);
+                
+                // Configurar intervalo para actualizar el contador de tiempo
+                loanTimeIntervals[loanId] = setInterval(function() {
+                  updateTimeElapsed(loanId, loanDate);
+                }, 1000);
+              } catch (err) {
+                console.error("Error al procesar préstamo:", err, loan);
+              }
+            });
+            
+            // Agregar event listeners a los botones de devolución
+            document.querySelectorAll('.action-button').forEach(function(button) {
+              button.addEventListener('click', function(e) {
+                e.stopPropagation(); // Evitar que se propague al hacer click en el botón
+                const cordNumber = parseInt(this.dataset.cordNumber);
+                returnFromLoanList(cordNumber);
+              });
+            });
+            
+            document.getElementById('current-loans-main-table').style.display = 'table';
+            document.getElementById('no-current-loans-main').style.display = 'none';
+          } else {
+            document.getElementById('current-loans-main-table').style.display = 'none';
+            document.getElementById('no-current-loans-main').style.display = 'block';
+          }
+          
+          document.getElementById('current-loans-loading').style.display = 'none';
+        })
+        .withFailureHandler(function(error) {
+          console.error("Error al cargar préstamos:", error);
+          document.getElementById('current-loans-loading').style.display = 'none';
+          document.getElementById('no-current-loans-main').style.display = 'block';
+          document.getElementById('no-current-loans-main').innerHTML = '<p>Error al cargar préstamos. Por favor, intenta de nuevo.</p>';
+          handleError(error);
+        })
+        .getCurrentLoans();
+    }
+    
+    // Función para iniciar la devolución desde la lista de préstamos
+    function returnFromLoanList(cordNumber) {
+      selectedCordNumber = cordNumber;
+      
+      // Actualizar el número de alargue en el formulario de devolución
+      document.getElementById('selected-cord-return').textContent = cordNumber;
+      
+      // Mostrar el formulario de devolución
+      showReturnForm();
+    }
+    
+    // Setup event listeners
+    function setupEventListeners() {
+      // Action buttons
+      document.getElementById('btn-loan').addEventListener('click', showLoanForm);
+      document.getElementById('btn-return').addEventListener('click', showReturnForm);
+      document.getElementById('btn-cancel').addEventListener('click', cancelSelection);
+      
+      // Loan form
+      document.getElementById('btn-submit-loan').addEventListener('click', submitLoanForm);
+      document.getElementById('btn-cancel-loan').addEventListener('click', cancelLoanForm);
+      document.getElementById('user-type').addEventListener('change', toggleUserType);
+      document.getElementById('course').addEventListener('change', loadStudentsByCourse);
+      
+      // Return form
+      document.getElementById('btn-submit-return').addEventListener('click', submitReturnForm);
+      document.getElementById('btn-cancel-return').addEventListener('click', cancelReturnForm);
+      const borrowerRadios = document.querySelectorAll('input[name="is-borrower"]');
+      borrowerRadios.forEach(function(radio) {
+        radio.addEventListener('change', toggleReturner);
+      });
+      
+      // Admin access
+      document.getElementById('btn-admin-access').addEventListener('click', showAdminLogin);
+      document.getElementById('btn-login').addEventListener('click', loginAdmin);
+      document.getElementById('btn-back-to-main').addEventListener('click', backToMain);
+      document.getElementById('btn-logout').addEventListener('click', logoutAdmin);
+      
+      // Admin tabs
+      const tabItems = document.querySelectorAll('.tab-item');
+      tabItems.forEach(function(item) {
+        item.addEventListener('click', function() {
+          const tabId = this.dataset.tab;
+          switchTab(tabId);
+          
+          // Load data based on the tab
+          if (tabId === 'current-loans') {
+            loadCurrentLoans();
+          } else if (tabId === 'blacklist') {
+            loadBlacklistedStudents();
+          } else if (tabId === 'configuration') {
+            loadExtensionCordsConfig();
+          }
+        });
+      });
+      
+      // Admin history filter
+      document.getElementById('history-course').addEventListener('change', loadLoanHistory);
+      
+      // Save configuration
+      document.getElementById('btn-save-config').addEventListener('click', saveExtensionCordsConfig);
+      
+      // Refresh button for current loans
+      document.getElementById('btn-refresh-loans').addEventListener('click', function() {
+        loadCurrentLoansForMainPage();
+        loadExtensionCords(); // También refrescamos la lista de alargues disponibles
+      });
+    }
+    
+    // Show loan form
+    function showLoanForm() {
+      document.getElementById('action-buttons').style.display = 'none';
+      document.getElementById('loan-form').style.display = 'block';
+      document.getElementById('return-form').style.display = 'none';
+      
+      // Load courses and teachers
+      loadCourses();
+      loadTeachers();
+      
+      toggleUserType();
+    }
+    
+    // Load courses
+    function loadCourses() {
+      google.script.run
+        .withSuccessHandler(function(data) {
+          courses = data;
+          const courseSelect = document.getElementById('course');
+          const historyCourseSelect = document.getElementById('history-course');
+          
+          // Clear existing options except the first one
+          courseSelect.innerHTML = '<option value="">Selecciona un curso...</option>';
+          historyCourseSelect.innerHTML = '<option value="">Selecciona un curso...</option>';
+          
+          // Add new options
+          data.forEach(function(course) {
+            const option = document.createElement('option');
+            option.value = course;
+            option.textContent = course;
+            courseSelect.appendChild(option);
+            
+            const historyOption = option.cloneNode(true);
+            historyCourseSelect.appendChild(historyOption);
+          });
+        })
+        .withFailureHandler(handleError)
+        .getCourses();
+    }
+    
+    // Load teachers - Actualizado para cargar lista simple
+    function loadTeachers() {
+      google.script.run
+        .withSuccessHandler(function(data) {
+          teachers = data; // Ahora es un array simple
+          updateTeacherSelect();
+        })
+        .withFailureHandler(handleError)
+        .getTeachers();
+    }
+    
+    // Update teacher select - Actualizado para mostrar todos los docentes sin filtrar por curso
+    function updateTeacherSelect() {
+      const teacherSelect = document.getElementById('teacher');
+      
+      // Clear existing options except the first one
+      teacherSelect.innerHTML = '<option value="">Selecciona un docente...</option>';
+      
+      // Add all teachers (no filtering by course)
+      teachers.forEach(function(teacher) {
+        const option = document.createElement('option');
+        option.value = teacher;
+        option.textContent = teacher;
+        teacherSelect.appendChild(option);
+      });
+    }
+    
+    // Load students by course
+    function loadStudentsByCourse() {
+      const course = document.getElementById('course').value;
+      
+      if (!course) {
+        return;
+      }
+      
+      // Ya no necesitamos actualizar la lista de docentes basada en el curso
+      // updateTeacherSelect();
+      
+      google.script.run
+        .withSuccessHandler(function(students) {
+          const studentSelect = document.getElementById('student');
+          
+          // Clear existing options except the first one
+          studentSelect.innerHTML = '<option value="">Selecciona un estudiante...</option>';
+          
+          // Add new options
+          students.forEach(function(student) {
+            const option = document.createElement('option');
+            option.value = student;
+            option.textContent = student;
+            studentSelect.appendChild(option);
+          });
+        })
+        .withFailureHandler(handleError)
+        .getStudentsByCourse(course);
+    }
+    
+    // Toggle user type fields
+    function toggleUserType() {
+      const userType = document.getElementById('user-type').value;
+      
+      if (userType === 'student') {
+        document.getElementById('student-group').style.display = 'block';
+      } else {
+        document.getElementById('student-group').style.display = 'none';
+      }
+    }
+    
+    // Submit loan form
+    function submitLoanForm() {
+      const userType = document.getElementById('user-type').value;
+      const course = document.getElementById('course').value;
+      const studentName = document.getElementById('student').value;
+      const teacherName = document.getElementById('teacher').value;
+      
+      // Validate form
+      if (!course) {
+        showNotification('Error: Debes seleccionar un curso.', 'error');
+        return;
+      }
+      
+      if (userType === 'student' && !studentName) {
+        showNotification('Error: Debes seleccionar un estudiante.', 'error');
+        return;
+      }
+      
+      if (!teacherName) {
+        showNotification('Error: Debes seleccionar un docente.', 'error');
+        return;
+      }
+      
+      // Submit loan
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showNotification(result.message, 'success');
+            cancelLoanForm();
+            loadExtensionCords();
+            loadCurrentLoansForMainPage(); // Actualizamos la tabla de préstamos actuales
+          } else {
+            showNotification(result.message, 'error');
+          }
+        })
+        .withFailureHandler(handleError)
+        .loanExtensionCord(selectedCordNumber, userType, course, studentName, teacherName);
+    }
+    
+    // Cancel loan form
+    function cancelLoanForm() {
+      document.getElementById('loan-form').style.display = 'none';
+      cancelSelection();
+    }
+    
+    // Show return form
+    function showReturnForm() {
+      document.getElementById('action-buttons').style.display = 'none';
+      document.getElementById('loan-form').style.display = 'none';
+      document.getElementById('return-form').style.display = 'block';
+      
+      // Reset form
+      document.querySelector('input[name="is-borrower"][value="yes"]').checked = true;
+      document.getElementById('returner-name').value = '';
+      document.getElementById('returner-group').style.display = 'none';
+    }
+    
+    // Toggle returner field
+    function toggleReturner() {
+      const isBorrower = document.querySelector('input[name="is-borrower"]:checked').value === 'yes';
+      
+      if (isBorrower) {
+        document.getElementById('returner-group').style.display = 'none';
+      } else {
+        document.getElementById('returner-group').style.display = 'block';
+      }
+    }
+    
+    // Submit return form
+    function submitReturnForm() {
+      const isBorrower = document.querySelector('input[name="is-borrower"]:checked').value === 'yes';
+      const returnerName = document.getElementById('returner-name').value;
+      
+      // Validate form
+      if (!isBorrower && !returnerName) {
+        showNotification('Error: Debes ingresar el nombre de quien devuelve.', 'error');
+        return;
+      }
+      
+      // Submit return
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            // Crear un mensaje más detallado con la información de duración
+            let message = result.message;
+            
+            // Formatear el mensaje como HTML para la notificación
+            let notificationMessage = message.replace(/\n\n/g, '<br>');
+            
+            // Mostrar la notificación con la clase return-result para preservar saltos de línea
+            showNotification(`<div class="return-result">${notificationMessage}</div>`, 'success');
+            
+            cancelReturnForm();
+            loadExtensionCords();
+            loadCurrentLoansForMainPage(); // Actualizamos la tabla de préstamos actuales
+          } else {
+            showNotification(result.message, 'error');
+          }
+        })
+        .withFailureHandler(handleError)
+        .returnExtensionCord(selectedCordNumber, returnerName, isBorrower);
+    }
+    
+    // Cancel return form
+    function cancelReturnForm() {
+      document.getElementById('return-form').style.display = 'none';
+      cancelSelection();
+    }
+    
+    // Cancel selection
+    function cancelSelection() {
+      selectedCordNumber = null;
+      document.getElementById('action-buttons').style.display = 'none';
+      
+      // Remove selected highlight
+      const items = document.querySelectorAll('.extension-item');
+      items.forEach(function(item) {
+        item.classList.remove('selected');
+      });
+    }
+    
+    // Show admin login
+    function showAdminLogin() {
+      document.getElementById('main-section').style.display = 'none';
+      document.getElementById('admin-login').style.display = 'block';
+    }
+    
+    // Login admin
+    function loginAdmin() {
+      const username = document.getElementById('admin-username').value;
+      const password = document.getElementById('admin-password').value;
+      
+      google.script.run
+        .withSuccessHandler(function(isAdmin) {
+          if (isAdmin) {
+            document.getElementById('admin-login').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+            
+            // Load admin data
+            loadCurrentLoans();
+            loadCourses();
+            loadBlacklistedStudents();
+            loadExtensionCordsConfig();
+          } else {
+            showNotification('Error: Credenciales inválidas.', 'error');
+          }
+        })
+        .withFailureHandler(handleError)
+        .verifyAdmin(username, password);
+    }
+    
+    // Back to main section
+    function backToMain() {
+      document.getElementById('admin-login').style.display = 'none';
+      document.getElementById('main-section').style.display = 'block';
+    }
+    
+    // Logout admin
+    function logoutAdmin() {
+      document.getElementById('admin-panel').style.display = 'none';
+      document.getElementById('main-section').style.display = 'block';
+      
+      // Clear admin credentials
+      document.getElementById('admin-username').value = '';
+      document.getElementById('admin-password').value = '';
+    }
+    
+    // Switch tab
+    function switchTab(tabId) {
+      // Update active tab
+      const tabItems = document.querySelectorAll('.tab-item');
+      tabItems.forEach(function(item) {
+        if (item.dataset.tab === tabId) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+      
+      // Show active tab content
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(function(content) {
+        if (content.id === tabId) {
+          content.classList.add('active');
+        } else {
+          content.classList.remove('active');
+        }
+      });
+    }
+    
+    // Load current loans for admin panel - CORREGIDO
+    function loadCurrentLoans() {
+      google.script.run
+        .withSuccessHandler(function(loans) {
+          const tableBody = document.querySelector('#current-loans-table tbody');
+          tableBody.innerHTML = '';
+          
+          if (loans && loans.length > 0) {
+            loans.forEach(function(loan, index) {
+              try {
+                const loanId = 'admin-loan-' + index;
+                const row = document.createElement('tr');
+                
+                // Asegurarnos de que la fecha de préstamo es un objeto Date válido
+                const loanDate = new Date(loan.loanDate);
+                
+                // Verificar si la fecha es válida
+                if (isNaN(loanDate.getTime())) {
+                  console.error("Fecha inválida en panel admin:", loan.loanDate);
+                  throw new Error("Fecha de préstamo inválida");
+                }
+                
+                // Calcular tiempo transcurrido
+                const timeElapsed = calculateTimeElapsed(loanDate);
+                
+                row.innerHTML = `
+                  <td>Alargue ${loan.cordNumber}</td>
+                  <td>${loan.userType === 'student' ? 'Estudiante' : 'Docente'}</td>
+                  <td>${loan.course}</td>
+                  <td>${loan.borrowerName}</td>
+                  <td>${loan.teacherName}</td>
+                  <td>${loan.timeSlot}</td>
+                  <td>${loan.loanTime}</td>
+                  <td><div id="time-counter-${loanId}" class="time-counter">${timeElapsed.text}</div></td>
+                `;
+                tableBody.appendChild(row);
+                
+                // Configurar intervalo para actualizar el contador de tiempo
+                loanTimeIntervals[loanId] = setInterval(function() {
+                  updateTimeElapsed(loanId, loanDate);
+                }, 1000);
+              } catch (err) {
+                console.error("Error al procesar préstamo en panel admin:", err, loan);
+              }
+            });
+            
+            document.getElementById('current-loans-table').style.display = 'table';
+            document.getElementById('no-current-loans').style.display = 'none';
+          } else {
+            document.getElementById('current-loans-table').style.display = 'none';
+            document.getElementById('no-current-loans').style.display = 'block';
+          }
+          
+          document.querySelector('#current-loans .loading').style.display = 'none';
+        })
+        .withFailureHandler(function(error) {
+          console.error("Error al cargar préstamos en panel admin:", error);
+          document.querySelector('#current-loans .loading').style.display = 'none';
+          document.getElementById('no-current-loans').style.display = 'block';
+          document.getElementById('no-current-loans').innerHTML = '<p>Error al cargar préstamos. Por favor, intenta de nuevo.</p>';
+          handleError(error);
+        })
+        .getCurrentLoans();
+    }
+    
+    // Load loan history
+    function loadLoanHistory() {
+      const course = document.getElementById('history-course').value;
+      
+      if (!course) {
+        document.getElementById('history-table').style.display = 'none';
+        document.getElementById('no-history').style.display = 'none';
+        document.querySelector('#loan-history .loading').style.display = 'block';
+        document.querySelector('#loan-history .loading').textContent = 'Selecciona un curso para ver el historial...';
+        return;
+      }
+      
+      document.querySelector('#loan-history .loading').textContent = 'Cargando historial...';
+      document.querySelector('#loan-history .loading').style.display = 'block';
+      
+      google.script.run
+        .withSuccessHandler(function(history) {
+          const tableBody = document.querySelector('#history-table tbody');
+          tableBody.innerHTML = '';
+          
+          if (history.length > 0) {
+            history.forEach(function(loan) {
+              const timeSlotsInfo = loan.loanTimeSlot + (loan.returnTimeSlot ? ' → ' + loan.returnTimeSlot : '');
+              
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>Alargue ${loan.cordNumber}</td>
+                <td>${loan.userType === 'student' ? 'Estudiante' : 'Docente'}</td>
+                <td>${loan.borrowerName}</td>
+                <td>${loan.teacherName}</td>
+                <td>${timeSlotsInfo}</td>
+                <td>${loan.loanTime}</td>
+                <td>${loan.returnTime}</td>
+                <td>${loan.duration || 'N/A'}</td>
+                <td>${loan.isReturned ? '<span style="color: #4CAF50;">Devuelto</span>' : '<span style="color: #F44336;">Pendiente</span>'}</td>
+              `;
+              tableBody.appendChild(row);
+            });
+            
+            document.getElementById('history-table').style.display = 'table';
+            document.getElementById('no-history').style.display = 'none';
+          } else {
+            document.getElementById('history-table').style.display = 'none';
+            document.getElementById('no-history').style.display = 'block';
+          }
+          
+          document.querySelector('#loan-history .loading').style.display = 'none';
+        })
+        .withFailureHandler(handleError)
+        .getLoanHistoryByGroup(course);
+    }
+    
+    // Load blacklisted students
+    function loadBlacklistedStudents() {
+      google.script.run
+        .withSuccessHandler(function(blacklist) {
+          const tableBody = document.querySelector('#blacklist-table tbody');
+          tableBody.innerHTML = '';
+          
+          if (blacklist.length > 0) {
+            blacklist.forEach(function(student) {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${student.studentName}</td>
+                <td>${student.sanctionDate}</td>
+                <td>${student.reportedBy}</td>
+                <td>${student.reason}</td>
+                <td><button class="btn btn-danger btn-remove-sanction" data-student="${student.studentName}">Quitar Sanción</button></td>
+              `;
+              tableBody.appendChild(row);
+            });
+            
+            // Add event listeners for remove sanction buttons
+            const removeButtons = document.querySelectorAll('.btn-remove-sanction');
+            removeButtons.forEach(function(button) {
+              button.addEventListener('click', function() {
+                const studentName = this.dataset.student;
+                removeSanction(studentName);
+              });
+            });
+            
+            document.getElementById('blacklist-table').style.display = 'table';
+            document.getElementById('no-blacklist').style.display = 'none';
+          } else {
+            document.getElementById('blacklist-table').style.display = 'none';
+            document.getElementById('no-blacklist').style.display = 'block';
+          }
+          
+          document.querySelector('#blacklist .loading').style.display = 'none';
+        })
+        .withFailureHandler(handleError)
+        .getBlacklistedStudents();
+    }
+    
+    // Function to load extension cords configuration
+    function loadExtensionCordsConfig() {
+      document.querySelector('#configuration .loading').style.display = 'block';
+      document.getElementById('config-container').style.display = 'none';
+      
+      google.script.run
+        .withSuccessHandler(function(config) {
+          const configGrid = document.querySelector('.extension-config-grid');
+          configGrid.innerHTML = '';
+          
+          config.forEach(function(cord) {
+            const item = document.createElement('div');
+            item.className = 'extension-config-item';
+            
+            const label = document.createElement('label');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = cord.enabled;
+            checkbox.dataset.number = cord.number;
+            checkbox.className = 'cord-config-checkbox';
+            
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode('Alargue ' + cord.number));
+            
+            item.appendChild(label);
+            configGrid.appendChild(item);
+          });
+          
+          document.querySelector('#configuration .loading').style.display = 'none';
+          document.getElementById('config-container').style.display = 'block';
+        })
+        .withFailureHandler(handleError)
+        .getExtensionCordsConfig();
+    }
+    
+    // Function to save extension cords configuration
+    function saveExtensionCordsConfig() {
+      const checkboxes = document.querySelectorAll('.cord-config-checkbox');
+      const updatedConfig = [];
+      
+      checkboxes.forEach(function(checkbox) {
+        updatedConfig.push({
+          number: parseInt(checkbox.dataset.number),
+          enabled: checkbox.checked
+        });
+      });
+      
+      // Show loading message
+      showNotification('Guardando configuración...', 'success');
+      
+      // Create a counter to track completion of all updates
+      let updateCount = 0;
+      let errorCount = 0;
+      
+      updatedConfig.forEach(function(cord) {
+        google.script.run
+          .withSuccessHandler(function(result) {
+            updateCount++;
+            
+            if (!result.success) {
+              errorCount++;
+            }
+            
+            // Check if all updates are complete
+            if (updateCount === updatedConfig.length) {
+              if (errorCount > 0) {
+                showNotification('Se encontraron errores al guardar la configuración.', 'error');
+              } else {
+                showNotification('Configuración guardada exitosamente.', 'success');
+                // Reload extension cords grid on main page
+                loadExtensionCords();
+                loadCurrentLoansForMainPage(); // También actualizamos la tabla de préstamos
+              }
+            }
+          })
+          .withFailureHandler(function(error) {
+            errorCount++;
+            updateCount++;
+            
+            // Check if all updates are complete
+            if (updateCount === updatedConfig.length) {
+              showNotification('Se encontraron errores al guardar la configuración.', 'error');
+            }
+          })
+          .updateExtensionCordConfig(cord.number, cord.enabled);
+      });
+    }
+    
+    // Remove sanction
+    function removeSanction(studentName) {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showNotification(result.message, 'success');
+            loadBlacklistedStudents();
+          } else {
+            showNotification(result.message, 'error');
+          }
+        })
+        .withFailureHandler(handleError)
+        .removeSanction(studentName);
+    }
+    
+    // Show notification
+    function showNotification(message, type) {
+      const notification = document.getElementById('notification');
+      notification.innerHTML = message;
+      notification.className = 'notification ' + type;
+      notification.style.display = 'block';
+      
+      // Hide notification after 5 seconds
+      setTimeout(function() {
+        notification.style.display = 'none';
+      }, 7000); // Aumentado a 7 segundos para dar más tiempo para leer la información de duración
+    }
+    
+    // Handle error
+    function handleError(error) {
+      console.error('Error:', error);
+      showNotification('Error: ' + (error.message || error), 'error');
+    }
+    
+    // Initialize on page load
+    google.script.run
+      .withSuccessHandler(function(result) {
+        // Intentar cargar cursos, si falla, mostrar el error
+        google.script.run
+          .withSuccessHandler(init)
+          .withFailureHandler(function(error) {
+            console.error('Error al inicializar:', error);
+            showNotification('Error al inicializar la aplicación. ' + (error.message || error), 'error');
+          })
+          .getCourses();
+      })
+      .withFailureHandler(function(error) {
+        console.error('Error al configurar hojas:', error);
+        showNotification('Error al configurar las hojas de cálculo. ' + (error.message || error), 'error');
+      })
+      .setupSpreadsheets();
+  </script>
+</body>
+</html>
